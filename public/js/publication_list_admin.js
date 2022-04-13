@@ -1,3 +1,5 @@
+
+console.log('file loaded')
 function get_publication_object(publication, idx) {
     return `<li class="list-group-item" data-m="${publication._id}">
                 <div class="row ${idx % 2 === 0 ? 'even_row' : 'odd_row'}">
@@ -37,6 +39,7 @@ function showList(publications) {
 $.getJSON("/get-all-publications")
     .done(function (data) {
         if (data.message === "success") {
+            console.log(data);
             showList(data.data);
         }
     });

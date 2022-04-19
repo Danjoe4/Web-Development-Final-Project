@@ -30,4 +30,12 @@ function getPosts() {
     });
 }
 
+// admins have the ability to add new posts
+$("#add_button").empty();
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('add_button') === 'true'){
+    $("#add_button").append(`
+    <a href="/get-edit-Blogpost" class="btn btn-primary btn-lg mt-3 mx-3" role="button">Add New Blog Post</a>
+    `)
+}
 getPosts();

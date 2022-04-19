@@ -326,8 +326,9 @@ app.post('/delete-publication-by-id', (req, res) => {
 // the blog page route, admins will have access to the "add blog" page
 app.get('/view-blog', (req, res) => {
     if (req.isAuthenticated() && req.user.role === 'admin') {
-        // fix this to show the add blog button
-        res.redirect('blog.html')
+        // the user could alter the url params to show the add button 
+        // but /get-edit-Blogpost route is protected 
+        res.redirect('blog.html' + "?add_button=true")
     } else if (req.isAuthenticated() && req.user.role === 'user') {
         res.redirect('blog.html');
     } else {
@@ -353,9 +354,20 @@ app.get('/get-all-blogposts', (req, res) => {
 })
 
 
+app.get('/get-edit-Blogpost',(req, res)=>{
+    if(req.isAuthenticated() && req.user.role === 'admin'){
+        res.sendFile(__dirname+'/private/editBlogpost.html')
+    }else{
+        res.redirect('/')
+    }
+})
+
+// save function for blogpost
 app.post('/save-blogpost', (req, res) => {
     if (req.isAuthenticated() && req.user.role === 'admin') {
-        console.log(req.body.publish_date)
+        console.log(req.body.title)
+        // save to the database ////////////////
+            
     }
     else if (req.isAuthenticated() && req.user.role === 'user') {
     res.redirect('/');

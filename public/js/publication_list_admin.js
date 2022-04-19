@@ -1,5 +1,5 @@
 
-console.log('file loaded')
+// console.log('file loaded')
 function get_publication_object(publication, idx) {
     return `<li class="list-group-item" data-m="${publication._id}">
                 <div class="row ${idx % 2 === 0 ? 'even_row' : 'odd_row'}">

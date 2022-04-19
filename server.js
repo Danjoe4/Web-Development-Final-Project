@@ -69,6 +69,31 @@ passport.use(User.createStrategy())
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
+
+const BlogpostSchema = new mongoose.Schema({
+    title: {
+        type:String,
+        require:true,
+        minlength: 5
+    },
+    publish_date: {
+        type:Date, 
+        default: Date.now(), 
+        require: true
+    },
+    author: String,
+    text: {
+        type: String,
+        require: true,
+        minlen: 20
+    },
+    links: {}, // Mixed type = no clue how we'll handle these
+    images: {}
+});
+
+const Blogpost = mongoose.model('Blogpost', BlogpostSchema)
+
+
 //get for home page
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
@@ -294,4 +319,47 @@ app.post('/delete-publication-by-id', (req, res) => {
     }else{
         res.redirect('/');
     }
+});
+
+
+
+// the blog page route, admins will have access to the "add blog" page
+app.get('/view-blog', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        // fix this to show the add blog button
+        res.redirect('blog.html')
+    } else if (req.isAuthenticated() && req.user.role === 'user') {
+        res.redirect('blog.html');
+    } else {
+        res.redirect('blog.html'); // for non-logged in users
+    }
+})
+
+
+app.get('/get-all-blogposts', (req, res) => {
+    Blogpost.find((err, data) => {
+        if (err) {
+            res.send({
+                "message": "internal database error",
+                "data": []
+            });
+        } else {
+            res.send({
+                "message": "success",
+                "data": data //.slice(0,5)
+            })
+        }
+    })
+})
+
+
+app.post('/save-blogpost', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        console.log(req.body.publish_date)
+    }
+    else if (req.isAuthenticated() && req.user.role === 'user') {
+    res.redirect('/');
+} else {
+    res.redirect('/'); // for non-logged in users
+}
 });

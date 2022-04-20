@@ -46,19 +46,20 @@ $.getJSON("/get-all-publications")
 
 function addNewPublication() {
 
-    location.href = "/get-edit-Publication";
+    location.href = "/admin-edit-pub";
 
 }
 
 function onEdit(obj) {
-    location.href="/get-edit-Publication?publication_id="+obj.value;
+    location.href = "/admin-edit-pub?publication_id="+obj.value;
+    //location.href="/get-edit-Publication?publication_id="+obj.value;
 }
 
 function onDelete(obj){
     $.post('/delete-publication-by-id',{_id:obj.value}).done(
         (data)=>{
             if(data.message ==="success"){
-                location.href="/get-publicaitonListAdmin"
+                location.href="/admin-pub-list"
             }else{
                 //handle database error
             }

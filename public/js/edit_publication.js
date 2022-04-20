@@ -1,8 +1,3 @@
-// title:String,
-//     publish_date:String,
-//     location:String,
-//     summary:String,
-//     link:String,
 
 function fillPublication(publication) {
     $('#title').val(publication.title);
@@ -10,12 +5,14 @@ function fillPublication(publication) {
     $('#location').val(publication.location)
     $('#summary').val(publication.summary);
     $('#link').val(publication.link);
+    $('#authors').val(publication.authors);
+    $('#image').val(publication.image);
 }
 
 function onCancel() {
     // if(movie_id){
         //come from detail page
-        location.href='/PublicationListAdmin.html'
+        location.href='/admin-pub-list'
         // location.href="/movie_detail.html?movie_id="+movie_id;
     // }else{
     //     //come from home page

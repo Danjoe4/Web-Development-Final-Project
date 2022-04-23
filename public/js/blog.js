@@ -30,7 +30,7 @@ function getPosts() {
     });
 }
 
-// admins have the ability to add new posts
+/* admins have the ability to add new posts
 $("#add_button").empty();
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('add_button') === 'true'){
@@ -39,3 +39,4 @@ if (urlParams.get('add_button') === 'true'){
     `)
 }
 getPosts();
+*/

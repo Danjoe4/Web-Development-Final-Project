@@ -51,7 +51,7 @@ function addNewPublication() {
 }
 
 function onEdit(obj) {
-    location.href="/get-edit-Publication?publication_id="+obj.value;
+    location.href="/get-edit-Publication?publication_id="+obj.value; //error?
 }
 
 function onDelete(obj){

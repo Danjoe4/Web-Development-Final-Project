@@ -11,6 +11,8 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 
+app.use(express.static(__dirname + "/private"));
+
 
 app.listen(3000, function () {
     console.log("server started at 3000");
@@ -29,25 +31,11 @@ app.use(passport.session());
 mongoose.connect('mongodb://localhost:27017/extractiveDB', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const publicationSchema = {
-    title:{
-        type:String,
-        required: true
-    },
-    publish_date:{
-        type:String,
-        validate: {
-            validator: function (value) {
-                return /\d{4}-\d{2}-\d{2}/.test(value)
-            },
-            message: "date format must be yyyy-mm-dd"
-        }
-    },
+    title: String,
+    publish_date: String,
     location: String,
     summary: String,
     link: String,
-    authors:String,
-    image:String,
-
 }
 
 const Publication = mongoose.model('Publication', publicationSchema)
@@ -114,14 +102,9 @@ app.get('/', (req, res) => {
 app.get('/our-team', (req, res) => {
     res.sendFile(__dirname + "/public/team.html");
 })
-// get about page
+
 app.get('/about', (req, res) => {
     res.sendFile(__dirname + "/public/about.html")
-})
-
-//get user publication list
-app.get('/publications',(req,res)=>{
-    res.sendFile(__dirname+"/public/PublicationList.html")
 })
 
 
@@ -163,7 +146,7 @@ app.post('/register', (req, res) => {
             console.log(user)
             const authenticate = passport.authenticate('local')
             authenticate(req, res, () => {
-                res.redirect('/portal')
+                res.redirect('/')
             })
         }
     })
@@ -178,30 +161,53 @@ app.get('/login', (req, res) => {
     }
 });
 
-app.post('/login', (req, res) => {
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password
-    });
-
-    req.login(user, err => {
-        if (err) {
-            res.redirect("/login?err=User name does not exist")
-        } else {
-            const authenticate = passport.authenticate('local', {
-                successRedirect: "/portal",
-                failureRedirect: "/login?error= username or password does not match"
-            })
-            authenticate(req, res);
-        }
-    })
-});
+app.post('/login',
+  passport.authenticate('local', 
+  { failureRedirect: '/login?error=username or password does not match', failureMessage: true } ),
+  function(req, res) {
+    res.redirect('/');
+  });
 
 
 app.get('/logout', (req, res) => {
     req.logout();
     res.redirect("/");
 });
+app.get('/get-edit-Publication',(req, res)=>{
+    if(req.isAuthenticated() && req.user.role === 'admin'){
+        res.sendFile(__dirname+'/private/editPublication.html')
+    }else{
+        res.redirect('/')
+    }
+})
+app.get('/get-publicaitonListAdmin',(req, res)=>{
+    if(req.isAuthenticated() && req.user.role === 'admin'){
+        res.sendFile(__dirname+'/private/PublicationListAdmin.html')
+    }else{
+        res.redirect('/')
+    }
+})
+
+app.get('/get-admin-portal',(req, res)=>{
+    if(req.isAuthenticated() && req.user.role === 'admin'){
+        res.sendFile(__dirname+'/private/admin_portal.html')
+    }else{
+        res.redirect('/')
+    }
+})
+
+
+
+//this route splits user views on publications, one for admin and one for normal user
+app.get('/view-publications', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.redirect('/get-admin-portal')
+    } else if (req.isAuthenticated() && req.user.role === 'user') {
+        res.redirect('PublicationList.html');
+    } else {
+        res.redirect('/')
+    }
+})
 
 //allows both users and admins to retrieve the publications list.
 app.get('/get-all-publications', (req, res) => {
@@ -249,8 +255,6 @@ app.post('/save-publication', (req, res) => {
             location: req.body.location,
             summary: req.body.summary,
             link: req.body.link,
-            authors:req.body.authors,
-            image:req.body.image,
         }
         console.log(req.body._id);
         if (req.body._id) {
@@ -259,10 +263,10 @@ app.post('/save-publication', (req, res) => {
                 {runValidators: true},
                 (err, info) => {
                     if (err) {
-                        res.redirect('/admin-edit-pub?error_message=' + err.message + "&input=" + JSON.stringify(publication) + "&publication_id=" + req.body._id)
+                        res.redirect('/edit_publication.html?error_message=' + err.message + "&input=" + JSON.stringify(publication) + "&publication_id=" + req.body._id)
                     } else {
-                        res.redirect('/admin-pub-list')
-
+                        res.redirect('/get-publicaitonListAdmin')
+                        //res.redirect("/movie_detail.html?movie_id=" + req.body._id)
                     }
                 }
             )
@@ -271,9 +275,11 @@ app.post('/save-publication', (req, res) => {
             np.save((err, new_publication) => {
                 if (err) {
                     console.log(err)
-                    res.redirect('/admin-edit-pub?error_message=' + err.message + "&input=" + JSON.stringify(publication))
+                    res.redirect('/edit_publication.html?error_message=' + err.message + "&input=" + JSON.stringify(publication))
                 } else {
-                    res.redirect('/admin-pub-list')
+                    console.log(new_publication._id);
+                    //res.redirect("/movie_detail.html?movie_id=" + new_movie._id)
+                    res.redirect('/get-publicaitonListAdmin')
                 }
             })
         }
@@ -281,7 +287,6 @@ app.post('/save-publication', (req, res) => {
         res.redirect('/')
     }
 })
-
 app.post('/delete-publication-by-id', (req, res) => {
     if (req.isAuthenticated() && req.user.role === 'admin') {
         Publication.deleteOne(
@@ -304,29 +309,88 @@ app.post('/delete-publication-by-id', (req, res) => {
     }
 });
 
-// determine if person is an admin or client
-app.get('/portal',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/admin_portal.html')
-    }else if(req.isAuthenticated()&&req.user.role==='user'){
-        res.redirect('/');
+
+
+// the blog page route, admins will have access to the "add blog" page
+app.get('/view-blog', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        // the user could alter the url params to show the add button 
+        // but /get-edit-Blogpost route is protected 
+        res.redirect('blog.html' + "?add_button=true")
+    } else if (req.isAuthenticated() && req.user.role === 'user') {
+        res.redirect('blog.html');
+    } else {
+        res.redirect('blog.html'); // for non-logged in users
     }
 })
 
-//get the admin publication list
-app.get('/admin-pub-list',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/PublicationListAdmin.html')
+
+app.get('/get-all-blogposts', (req, res) => {
+    Blogpost.find((err, data) => {
+        if (err) {
+            res.send({
+                "message": "internal database error",
+                "data": []
+            });
+        } else {
+            res.send({
+                "message": "success",
+                "data": data //.slice(0,5)
+            })
+        }
+    })
+})
+
+
+app.get('/get-edit-Blogpost',(req, res)=>{
+    if(req.isAuthenticated() && req.user.role === 'admin'){
+        res.sendFile(__dirname+'/private/editBlogpost.html')
     }else{
-        res.redirect('/');
+        res.redirect('/')
     }
 })
 
-//get the edit publication form for admins
-app.get('/admin-edit-pub',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/editPublication.html')
-    }else{
-        res.redirect('/');
+// save function for blogpost
+app.post('/save-blogpost', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        console.log(req.body.title)
+        const blogpost = {
+            title: req.body.title,
+            // publish date is Date.now() by default
+            author: req.body.author,
+            text: req.body.text
+        }
+        console.log(req.body._id);
+        if (req.body._id) {
+            Blogpost.updateOne({_id: req.body._id},
+                {$set: blogpost},
+                {runValidators: true},
+                (err, info) => {
+                    if (err) {
+                        res.redirect('/get-edit-Blogpost?error_message=' + err.message + "&input=" + JSON.stringify(publication) + "&publication_id=" + req.body._id)
+                    } else {
+                        res.redirect('/get-edit-Blogpost')
+                        //res.redirect("/movie_detail.html?movie_id=" + req.body._id)
+                    }
+                }
+            )
+        } else {
+            const nb = new Blogpost(blogpost);
+            nb.save((err, new_publication) => {
+                if (err) {
+                    console.log(err)
+                    res.redirect('/get-edit-Blogpost?error_message=' + err.message + "&input=" + JSON.stringify(blogpost))
+                } else {
+                    console.log(new_publication._id);
+                    res.redirect('/view-blog')
+                }
+            })
+        }
+    // otherwise redirect; not allowed to save blogposts   
     }
-})
+    else if (req.isAuthenticated() && req.user.role === 'user') {
+        res.redirect('/');
+} else {
+    res.redirect('/'); // for non-logged in users
+}
+});

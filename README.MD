@@ -1,4 +1,4 @@
-tasks: 
-We seriously need to talk about the navbar
-Tidying (about page, home, )
-add ability for admins to add a blog post
+Tasks:
+Fix redirect on login
+Formatting for both the blog page and publications page (Dan can handle this he knows how scientific publications should be presented)
+Fix footer icons

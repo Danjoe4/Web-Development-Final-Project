@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 
@@ -21,6 +22,8 @@
 //     location:String,
 //     summary:String,
 //     link:String,
+=======
+>>>>>>> e55b9dc38aabca6183b449702b846d07da6a7a99
 
 function fillPublication(publication) {
     $('#title').val(publication.title);
@@ -28,12 +31,14 @@ function fillPublication(publication) {
     $('#location').val(publication.location)
     $('#summary').val(publication.summary);
     $('#link').val(publication.link);
+    $('#authors').val(publication.authors);
+    $('#image').val(publication.image);
 }
 
 function onCancel() {
     // if(movie_id){
         //come from detail page
-        location.href='/PublicationListAdmin.html'
+        location.href='/admin-pub-list'
         // location.href="/movie_detail.html?movie_id="+movie_id;
     // }else{
     //     //come from home page

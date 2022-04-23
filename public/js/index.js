@@ -5,6 +5,7 @@ $(document).ready(()=>{
             const user=data.data;
             $('.login').remove();
             $('#showname').text(user.fullname)
+            $('#showname2').text(user.fullname)
         }else{
             $('.logout').remove();
         }

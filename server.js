@@ -11,8 +11,6 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 
-app.use(express.static(__dirname + "/private"));
-
 
 app.listen(3000, function () {
     console.log("server started at 3000");
@@ -31,11 +29,25 @@ app.use(passport.session());
 mongoose.connect('mongodb://localhost:27017/extractiveDB', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const publicationSchema = {
-    title: String,
-    publish_date: String,
+    title:{
+        type:String,
+        required: true
+    },
+    publish_date:{
+        type:String,
+        validate: {
+            validator: function (value) {
+                return /\d{4}-\d{2}-\d{2}/.test(value)
+            },
+            message: "date format must be yyyy-mm-dd"
+        }
+    },
     location: String,
     summary: String,
     link: String,
+    authors:String,
+    image:String,
+
 }
 
 const Publication = mongoose.model('Publication', publicationSchema)
@@ -102,9 +114,14 @@ app.get('/', (req, res) => {
 app.get('/our-team', (req, res) => {
     res.sendFile(__dirname + "/public/team.html");
 })
-
+// get about page
 app.get('/about', (req, res) => {
     res.sendFile(__dirname + "/public/about.html")
+})
+
+//get user publication list
+app.get('/publications',(req,res)=>{
+    res.sendFile(__dirname+"/public/PublicationList.html")
 })
 
 
@@ -146,7 +163,7 @@ app.post('/register', (req, res) => {
             console.log(user)
             const authenticate = passport.authenticate('local')
             authenticate(req, res, () => {
-                res.redirect('/')
+                res.redirect('/portal')
             })
         }
     })
@@ -172,7 +189,7 @@ app.post('/login', (req, res) => {
             res.redirect("/login?err=User name does not exist")
         } else {
             const authenticate = passport.authenticate('local', {
-                successRedirect: "/",
+                successRedirect: "/portal",
                 failureRedirect: "/login?error= username or password does not match"
             })
             authenticate(req, res);
@@ -185,41 +202,6 @@ app.get('/logout', (req, res) => {
     req.logout();
     res.redirect("/");
 });
-app.get('/get-edit-Publication',(req, res)=>{
-    if(req.isAuthenticated() && req.user.role === 'admin'){
-        res.sendFile(__dirname+'/private/editPublication.html')
-    }else{
-        res.redirect('/')
-    }
-})
-app.get('/get-publicaitonListAdmin',(req, res)=>{
-    if(req.isAuthenticated() && req.user.role === 'admin'){
-        res.sendFile(__dirname+'/private/PublicationListAdmin.html')
-    }else{
-        res.redirect('/')
-    }
-})
-
-app.get('/get-admin-portal',(req, res)=>{
-    if(req.isAuthenticated() && req.user.role === 'admin'){
-        res.sendFile(__dirname+'/private/admin_portal.html')
-    }else{
-        res.redirect('/')
-    }
-})
-
-
-
-//this route splits user views on publications, one for admin and one for normal user
-app.get('/view-publications', (req, res) => {
-    if (req.isAuthenticated() && req.user.role === 'admin') {
-        res.redirect('/get-admin-portal')
-    } else if (req.isAuthenticated() && req.user.role === 'user') {
-        res.redirect('PublicationList.html');
-    } else {
-        res.redirect('/')
-    }
-})
 
 //allows both users and admins to retrieve the publications list.
 app.get('/get-all-publications', (req, res) => {
@@ -267,6 +249,8 @@ app.post('/save-publication', (req, res) => {
             location: req.body.location,
             summary: req.body.summary,
             link: req.body.link,
+            authors:req.body.authors,
+            image:req.body.image,
         }
         console.log(req.body._id);
         if (req.body._id) {
@@ -275,10 +259,10 @@ app.post('/save-publication', (req, res) => {
                 {runValidators: true},
                 (err, info) => {
                     if (err) {
-                        res.redirect('/edit_publication.html?error_message=' + err.message + "&input=" + JSON.stringify(publication) + "&publication_id=" + req.body._id)
+                        res.redirect('/admin-edit-pub?error_message=' + err.message + "&input=" + JSON.stringify(publication) + "&publication_id=" + req.body._id)
                     } else {
-                        res.redirect('/get-publicaitonListAdmin')
-                        //res.redirect("/movie_detail.html?movie_id=" + req.body._id)
+                        res.redirect('/admin-pub-list')
+
                     }
                 }
             )
@@ -287,11 +271,9 @@ app.post('/save-publication', (req, res) => {
             np.save((err, new_publication) => {
                 if (err) {
                     console.log(err)
-                    res.redirect('/edit_publication.html?error_message=' + err.message + "&input=" + JSON.stringify(publication))
+                    res.redirect('/admin-edit-pub?error_message=' + err.message + "&input=" + JSON.stringify(publication))
                 } else {
-                    console.log(new_publication._id);
-                    //res.redirect("/movie_detail.html?movie_id=" + new_movie._id)
-                    res.redirect('/get-publicaitonListAdmin')
+                    res.redirect('/admin-pub-list')
                 }
             })
         }
@@ -299,6 +281,7 @@ app.post('/save-publication', (req, res) => {
         res.redirect('/')
     }
 })
+
 app.post('/delete-publication-by-id', (req, res) => {
     if (req.isAuthenticated() && req.user.role === 'admin') {
         Publication.deleteOne(
@@ -321,6 +304,7 @@ app.post('/delete-publication-by-id', (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 
 
 // the blog page route, admins will have access to the "add blog" page
@@ -375,3 +359,31 @@ app.post('/save-blogpost', (req, res) => {
     res.redirect('/'); // for non-logged in users
 }
 });
+=======
+// determine if person is an admin or client
+app.get('/portal',(req,res)=>{
+    if(req.isAuthenticated()&&req.user.role==='admin'){
+        res.sendFile(__dirname+'/private/admin_portal.html')
+    }else if(req.isAuthenticated()&&req.user.role==='user'){
+        res.redirect('/');
+    }
+})
+
+//get the admin publication list
+app.get('/admin-pub-list',(req,res)=>{
+    if(req.isAuthenticated()&&req.user.role==='admin'){
+        res.sendFile(__dirname+'/private/PublicationListAdmin.html')
+    }else{
+        res.redirect('/');
+    }
+})
+
+//get the edit publication form for admins
+app.get('/admin-edit-pub',(req,res)=>{
+    if(req.isAuthenticated()&&req.user.role==='admin'){
+        res.sendFile(__dirname+'/private/editPublication.html')
+    }else{
+        res.redirect('/');
+    }
+})
+>>>>>>> e55b9dc38aabca6183b449702b846d07da6a7a99

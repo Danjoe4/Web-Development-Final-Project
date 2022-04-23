@@ -33,10 +33,12 @@
                     </li>
                     <li class="u-nav-item"><a
                             class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                            href="/view-blog" style="padding: 10px 20px;">Blog</a>
+                            href="#" style="padding: 10px 20px;">About Us</a>
                     </li>
-
-                    <!-- These navbar elements will unhide/hide themselves depending on login state -->
+                    <li class="u-nav-item"><a
+                            class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
+                            href="/publications" style="padding: 10px 20px;">Publications</a>
+                    </li>
                     <li class="u-nav-item login"><a
                             class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
                             href="/login" style="padding: 10px 20px;">Login</a>
@@ -49,31 +51,60 @@
                             class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
                             href="/logout" style="padding: 10px 20px;">Logout</a>
                     </li>
-                    <li class="u-nav-item greeting">
+                    <li class="u-nav-item">
                         <div class="navbar-brand mb-0 logout">Hello, <span id="showname"></span></div>
                     </li>
-                    <!-- Toggle the hidden state -->
-                    <script>
-                        $(document).ready(function () {
-                            $.get("/get_current_user", function (data) {
-                                console.log(data.data.username);
-                                // hide the login/register is the user is logged in
-                                if (data.data.username) {
-                                    $(".login").hide();
-                                    $(".logout").show();
-                                    $(".greeting").show();
-                                }
-                                else {
-                                    $(".login").show();
-                                    $(".greeting").hide();
-                                    $(".logout").hide();
-                                }
-                            })
-                        });
-                    </script>
+
 
                 </ul>
             </div>
+            <div class="u-nav-container-collapse">
+                <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+                    <div class="u-inner-container-layout u-sidenav-overflow">
+                        <div class="u-menu-close"></div>
+                        <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/">Home</a>
+                            </li>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/our-team">Our Team</a>
+                            </li>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#">About</a>
+                            </li>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/publications">Publications</a>
+                            </li>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link login" href="/login">Log In</a>
+                            </li>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link login" href="/register">Register</a>
+                            </li>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link logout" href="/logout">Logout</a>
+                            </li>
+                            <li class="u-nav-item logout"><p>Hello,</p><span id="showname2"></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+            </div>
         </nav>
     </div>
+
+
+     <!-- Toggle the hidden state -->
+     <script>
+        $(document).ready(function () {
+            $.get("/get_current_user", function (data) {
+                console.log(data.data.username);
+                // hide the login/register is the user is logged in
+                if (data.data.username) {
+                    $(".login").hide();
+                    $(".logout").show();
+                    $(".greeting").show();
+                }
+                else {
+                    $(".login").show();
+                    $(".greeting").hide();
+                    $(".logout").hide();
+                }
+            })
+        });
+    </script>
+
 </header>

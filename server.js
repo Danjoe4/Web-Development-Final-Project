@@ -304,62 +304,6 @@ app.post('/delete-publication-by-id', (req, res) => {
     }
 });
 
-<<<<<<< HEAD
-
-
-// the blog page route, admins will have access to the "add blog" page
-app.get('/view-blog', (req, res) => {
-    if (req.isAuthenticated() && req.user.role === 'admin') {
-        // the user could alter the url params to show the add button 
-        // but /get-edit-Blogpost route is protected 
-        res.redirect('blog.html' + "?add_button=true")
-    } else if (req.isAuthenticated() && req.user.role === 'user') {
-        res.redirect('blog.html');
-    } else {
-        res.redirect('blog.html'); // for non-logged in users
-    }
-})
-
-
-app.get('/get-all-blogposts', (req, res) => {
-    Blogpost.find((err, data) => {
-        if (err) {
-            res.send({
-                "message": "internal database error",
-                "data": []
-            });
-        } else {
-            res.send({
-                "message": "success",
-                "data": data //.slice(0,5)
-            })
-        }
-    })
-})
-
-
-app.get('/get-edit-Blogpost',(req, res)=>{
-    if(req.isAuthenticated() && req.user.role === 'admin'){
-        res.sendFile(__dirname+'/private/editBlogpost.html')
-    }else{
-        res.redirect('/')
-    }
-})
-
-// save function for blogpost
-app.post('/save-blogpost', (req, res) => {
-    if (req.isAuthenticated() && req.user.role === 'admin') {
-        console.log(req.body.title)
-        // save to the database ////////////////
-            
-    }
-    else if (req.isAuthenticated() && req.user.role === 'user') {
-    res.redirect('/');
-} else {
-    res.redirect('/'); // for non-logged in users
-}
-});
-=======
 // determine if person is an admin or client
 app.get('/portal',(req,res)=>{
     if(req.isAuthenticated()&&req.user.role==='admin'){
@@ -386,4 +330,3 @@ app.get('/admin-edit-pub',(req,res)=>{
         res.redirect('/');
     }
 })
->>>>>>> e55b9dc38aabca6183b449702b846d07da6a7a99

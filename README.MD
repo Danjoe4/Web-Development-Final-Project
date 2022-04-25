@@ -1,8 +1,19 @@
-Tasks:
-Fix redirect on login
-Formatting for both the blog page and publications page (Dan can handle this he knows how scientific publications should be presented)
-Fix footer icons
+Schedule:
+To do for Dan:
+Set up continuous integration
 
+Blog page 
+-fix formatting
+-form autofill
+-add comments
+Make about page
+
+Kyan:
+Adding the events 
+and our team page
+
+Demo is video for May 2nd 
+Due May 7th
 
 url:
 https://web-dev-with-kyan.ue.r.appspot.com/

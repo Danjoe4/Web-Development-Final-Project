@@ -1,0 +1,35 @@
+#publication_list{
+    padding:1rem
+}
+
+#publication_list .card {
+    border: 2px solid var(--red);
+}
+
+#publication_list, .donate .team {
+    margin-top: 2em;
+    position: relative;
+}
+
+#publication_list h2, h3 {
+    font-family: 'Vollkorn', serif;
+    color: var(--black);
+    margin: auto;
+    text-align: center;
+}
+
+#publication_list p,a{
+    text-align: center
+}
+#publication_list .card-img-top {
+    border-radius: 10%;
+    padding: 2rem;
+    display: block;
+    height: auto;
+    width: 70%;
+    margin: auto;
+}
+#publication_list .list-group-item {
+
+    border-color: var(--white);
+}

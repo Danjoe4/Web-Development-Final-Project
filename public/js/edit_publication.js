@@ -1,29 +1,3 @@
-<<<<<<< HEAD
-
-
-
-
-
-
-
-// this file should be moved to private
-
-
-
-
-
-
-
-
-
-
-// title:String,
-//     publish_date:String,
-//     location:String,
-//     summary:String,
-//     link:String,
-=======
->>>>>>> e55b9dc38aabca6183b449702b846d07da6a7a99
 
 function fillPublication(publication) {
     $('#title').val(publication.title);

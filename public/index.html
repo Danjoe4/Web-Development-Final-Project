@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/nicepage.css" media="screen">
     <link rel="stylesheet" href="css/Home.css" media="screen">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
+    <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
     <script class="u-script" type="text/javascript" src="js/nicepage.js" defer=""></script>
 
     <meta name="generator" content="Nicepage 4.8.2, nicepage.com">
@@ -39,12 +39,15 @@
 </head>
 <body class="u-body u-xl-mode">
 
+<!-- Navbar -->
+<div id="nav-placeholder">
+</div>
+<script>
+    $(function(){
+      $("#nav-placeholder").load("navbar.html");
+    });
+</script>
 
-<section id="nav-placeholder">
-    <script>
-        $("#nav-placeholder").load("navbar.html");
-    </script>
-</section>
 
 
 <section class="u-align-center u-clearfix u-image u-shading u-section-1" src="" data-image-width="1000"
@@ -103,8 +106,12 @@
 </section>
 
 
-
-
+<!-- Footer -->
+<section id="footer-placeholder">
+</section>
+<script>
+    $("#footer-placeholder").load("footer.html");
+</script>
 
 
 </body>

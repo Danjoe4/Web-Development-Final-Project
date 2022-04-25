@@ -13,9 +13,12 @@ app.use(express.static(__dirname + "/public"));
 
 app.use(express.static(__dirname + "/private"));
 
+// for easy, continuous deployment
+require('dotenv').config();
+const port = process.env.PORT // will be 8080 for the cloud
 
-app.listen(3000, function () {
-    console.log("server started at 3000");
+app.listen(port, function () {
+    console.log("server started at " + port);
 });
 
 //Initialize passport

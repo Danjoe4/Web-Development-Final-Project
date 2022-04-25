@@ -35,6 +35,7 @@ const publicationSchema = {
     publish_date: String,
     location: String,
     summary: String,
+    authors: String,
     link: String,
 }
 
@@ -52,6 +53,7 @@ const userSchema = new mongoose.Schema({
         require: true,
 
     },
+
     fullname: {
         type: String,
         require: true,
@@ -310,7 +312,7 @@ app.get('/admin-pub-list',(req,res)=>{
 })
 
 //get the edit publication form for admins
-app.get('/admin-edit-pub',(req,res)=>{
+app.get('/get-edit-publication',(req,res)=>{
     if(req.isAuthenticated()&&req.user.role==='admin'){
         res.sendFile(__dirname+'/private/editPublication.html')
     }else{
@@ -415,7 +417,7 @@ app.get('/admin-blog-list',(req,res)=>{
 })
 
 //get the edit publication form for admins
-app.get('/admin-edit-pub',(req,res)=>{
+app.get('/admin-edit-blog',(req,res)=>{
     if(req.isAuthenticated()&&req.user.role==='admin'){
         res.sendFile(__dirname+'/private/editBlogpost.html')
     }else{

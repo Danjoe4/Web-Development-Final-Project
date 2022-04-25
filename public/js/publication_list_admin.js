@@ -58,7 +58,7 @@ function onDelete(obj){
     $.post('/delete-publication-by-id',{_id:obj.value}).done(
         (data)=>{
             if(data.message ==="success"){
-                location.href="/get-publicaitonListAdmin"
+                location.href="/admin-pub-list"
             }else{
                 //handle database error
             }

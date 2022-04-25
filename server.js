@@ -36,6 +36,7 @@ const publicationSchema = {
     location: String,
     summary: String,
     authors: String,
+    image:String,
     link: String,
 }
 

@@ -16,6 +16,7 @@ app.use(express.static(__dirname + "/private"));
 // for easy, continuous deployment
 require('dotenv').config();
 const port = process.env.PORT // will be 8080 for the cloud
+const db_url = process.env.DB_URL; 
 
 app.listen(port, function () {
     console.log("server started at " + port);
@@ -31,7 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Configure Mongoose
-mongoose.connect('mongodb://localhost:27017/extractiveDB', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const publicationSchema = {
     title: String,
@@ -93,8 +94,20 @@ const BlogpostSchema = new mongoose.Schema({
         require: true,
         minlen: 20
     },
-    links: {}, // Mixed type = no clue how we'll handle these
-    images: {}
+    image: String,
+    comments: [{
+        user: String,
+        comment: {
+            type: String,
+            require: true,
+            minlen: 1
+        },
+        date: {
+            type: Date,
+            default: Date.now(),
+            require: true
+        }
+    }]
 });
 
 const Blogpost = mongoose.model('Blogpost', BlogpostSchema)
@@ -329,8 +342,6 @@ app.get('/get-edit-publication',(req,res)=>{
 // the blog page route, admins will have access to the "add blog" page
 app.get('/view-blog', (req, res) => {
     if (req.isAuthenticated() && req.user.role === 'admin') {
-        // the user could alter the url params to show the add button 
-        // but /get-edit-Blogpost route is protected 
         res.redirect('blog.html' + "?add_button=true")
     } else if (req.isAuthenticated() && req.user.role === 'user') {
         res.redirect('blog.html');
@@ -373,7 +384,8 @@ app.post('/save-blogpost', (req, res) => {
             title: req.body.title,
             // publish date is Date.now() by default
             author: req.body.author,
-            text: req.body.text
+            text: req.body.text,
+            image: req.body.image
         }
         console.log(req.body._id);
         if (req.body._id) {
@@ -459,3 +471,44 @@ app.get('/admin-edit-blog',(req,res)=>{
         res.redirect('/');
     }
 })
+
+app.get('/get-blog-by-id',
+    function (req, res) {
+        console.log(req.query.blog_id);
+        Blogpost.find({"_id": req.query.blog_id}, function (err, data) {
+            if (err || data.length === 0) {
+                res.send({
+                    "message": "internal database error",
+                    "data": {}
+                });
+            } else {
+                res.send({
+                    "message": "success",
+                    "data": data[0]
+                })
+            }
+        });
+    });
+
+
+    app.post('/save-blog-comment', (req, res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+        }
+        const cmt = {user: req.user.fullname, 
+            comment:req.body.comment_txt
+        }
+        Blogpost.findOneAndUpdate({"_id": req.query.blog_id},
+            {$push: {comments: cmt} },
+            {runValidators: true},
+            (err, info) => {
+                if (err) {
+                    res.redirect('/')
+                } else {
+                    res.redirect('/view-blog')
+                }
+            }
+        );
+
+        
+    })

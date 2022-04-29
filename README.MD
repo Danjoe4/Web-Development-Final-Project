@@ -1,11 +1,5 @@
 Schedule:
 To do for Dan:
-Set up continuous integration
-
-Blog page 
--fix formatting
--form autofill
--add comments
 Make about page
 
 Kyan:

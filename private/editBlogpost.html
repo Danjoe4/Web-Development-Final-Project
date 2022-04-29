@@ -48,26 +48,26 @@
 
     <section id="edit_blogpost">
         <form action="/save-blogpost" method="post">
-            <div class="mb-3">
+            <div class="mb-3 mx-3">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" placeholder="Post Title" name="title" required>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 mx-3">
                 <label for="author" class="form-label">Author</label>
                 <input type="text" class="form-control" id="author" placeholder="author name" name="author" required>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 mx-3">
                 <label for="text" class="form-label">text</label>
                 <textarea rows="4" cols="50" class="form-control" name="text" id="text" required></textarea>
             </div>
-            <div class="mb-3">
-                <label for="links" class="form-label">References</label>
-                <input type="text" class="form-control" id="links" placeholder="comma separated urls here" name="links">
+            <div class="mb-3 mx-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="text" class="form-control" id="image" placeholder="Image link here" name="image">
             </div>
-            <div class="mb-3">
+            <div class="mb-3 mx-3">
                 <p id="error_message" style="color: red"></p>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 mx-3">
                 <button type="submit" class="btn btn-primary" style="width: 20%">Save</button>&nbsp;
                 <a type="button" class="btn btn-primary" style="width: 20%" href="/admin-blog-list">Cancel</a>
             </div>

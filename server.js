@@ -18,9 +18,6 @@ require('dotenv').config();
 const port = process.env.PORT // will be 8080 for the cloud
 const db_url = process.env.DB_URL; 
 
-app.listen(port, function () {
-    console.log("server started at " + port);
-});
 
 //Initialize passport
 app.use(session({
@@ -31,8 +28,22 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Configure Mongoose
-mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true});
+// Configure Mongoose, and listen on the port, this is better for deployment
+mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true})
+.then(()=>{
+    app.listen(port, ()=>{
+        console.log("Database connection is Ready "
+        + "and Server is Listening on Port ", port);
+    })
+})
+.catch((err)=>{
+    console.log("A error has been occurred while"
+        + " connecting to database.");   
+})
+
+
+
+
 
 const publicationSchema = {
     title: String,
@@ -58,7 +69,6 @@ const userSchema = new mongoose.Schema({
         require: true,
 
     },
-
     fullname: {
         type: String,
         require: true,

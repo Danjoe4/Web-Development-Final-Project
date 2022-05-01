@@ -52,10 +52,16 @@ function renderComments(post_cmts) {
     }
     let base = `<ul class="list-group" id="comment_list">`;
     post_cmts.forEach((cmt, idx) => {
+<<<<<<< HEAD
         let date = cmt.date.split("T")[0];
         base = base + `<li class="list-group-item">
         ${cmt.comment} <br>
         <small>by ${cmt.user}</small> <small> on ${date}</small> 
+=======
+        base = base + `<li class="list-group-item">
+        ${cmt.comment} <br>
+        <small>by ${cmt.user}</small>
+>>>>>>> b892c346618d7696233da160031bc8aa0e993a04
         </li>`
     });
     return base + `</ul>`;

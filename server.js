@@ -352,7 +352,9 @@ app.get('/view-blog', (req, res) => {
 
 
 app.get('/get-all-blogposts', (req, res) => {
-    Blogpost.find((err, data) => {
+    // sorts with the most recent posts at the top
+    Blogpost.find({}).sort({publish_date: -1}).
+        exec((err, data) => {
         if (err) {
             res.send({
                 "message": "internal database error",

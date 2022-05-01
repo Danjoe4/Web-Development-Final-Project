@@ -1,11 +1,3 @@
-Schedule:
-To do for Dan:
-Make about page
-
-Kyan:
-Adding the events 
-and our team page
-
 Demo is video for May 2nd 
 Due May 7th
 

@@ -8,3 +8,7 @@ Deployment:
 git pull
 npm install && npm start
 gcloud app deploy
+
+
+New Deployment sequence:
+gcloud compute --project "web-dev-with-kyan" ssh --zone northamerica-northeast1-a instance-web-dev

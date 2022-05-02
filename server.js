@@ -16,8 +16,8 @@ app.use(express.static(__dirname + "/private"));
 // for easy, continuous deployment
 require('dotenv').config();
 const port = process.env.PORT // will be 8080 for the cloud
-const db_url = process.env.DB_URL; 
-
+const db_url = process.env.DB_URL;
+console.log("Will attempt to connect at" + db_url);
 
 //Initialize passport
 app.use(session({

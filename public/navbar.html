@@ -40,9 +40,13 @@
                             href="/publications" style="padding: 10px 20px;">Publications</a>
                     </li>
                     <li class="u-nav-item"><a
-                        class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                        href="/view-blog" style="padding: 10px 20px;">Blog</a>
-                </li>
+                            class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
+                            href="/view-blog" style="padding: 10px 20px;">Blog</a>
+                    </li>
+                    <li class="u-nav-item"><a
+                            class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
+                            href="/events" style="padding: 10px 20px;">Events</a>
+                    </li>
                     <li class="u-nav-item login"><a
                             class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
                             href="/login" style="padding: 10px 20px;">Login</a>
@@ -56,7 +60,7 @@
                             href="/logout" style="padding: 10px 20px;">Logout</a>
                     </li>
                     <li class="u-nav-item">
-                        <div class="navbar-brand mb-0 logout">Hello, <span id="showname"></span></div>
+                        <div class="navbar-brand mb-0 logout">Hello, <a href="/portal" id="showname"></a></div>
                     </li>
 
 
@@ -75,17 +79,20 @@
                             </li>
                             <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/publications">Publications</a>
                             </li>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/events">Events</a>
+                            </li>
                             <li class="u-nav-item"><a class="u-button-style u-nav-link login" href="/login">Log In</a>
                             </li>
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link login" href="/register">Register</a>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link login"
+                                                      href="/register">Register</a>
                             </li>
                             <li class="u-nav-item"><a
-                                class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                                href="/view-blog" style="padding: 10px 20px;">Blog</a>
-                        </li>
+                                    class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
+                                    href="/view-blog" style="padding: 10px 20px;">Blog</a>
+                            </li>
                             <li class="u-nav-item"><a class="u-button-style u-nav-link logout" href="/logout">Logout</a>
                             </li>
-                            <li class="u-nav-item logout"><p>Hello,</p><span id="showname2"></span></li>
+                            <li class="u-nav-item logout"><p>Hello,</p><a href="/portal" id="showname2"></a></li>
                         </ul>
                     </div>
                 </div>
@@ -95,8 +102,8 @@
     </div>
 
 
-     <!-- Toggle the hidden state -->
-     <script>
+    <!-- Toggle the hidden state -->
+    <script>
         $(document).ready(function () {
             $.get("/get_current_user", function (data) {
                 console.log(data.data.username);
@@ -104,8 +111,7 @@
                 if (data.data.username) {
                     $(".login").hide();
                     $(".logout").show();
-                }
-                else {
+                } else {
                     $(".login").show();
                     $(".logout").hide();
                 }

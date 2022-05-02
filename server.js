@@ -51,11 +51,26 @@ const publicationSchema = {
     location: String,
     summary: String,
     authors: String,
-    image:String,
+    image: String,
     link: String,
 }
 
 const Publication = mongoose.model('Publication', publicationSchema)
+
+const eventsSchema = {
+    title: String,
+    image: String,
+    summary: String,
+    location: String,
+    date: String,
+    people: [{
+        username: String,
+        fullname: String,
+    }
+    ]
+}
+const Event = mongoose.model('Event', eventsSchema)
+
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -77,7 +92,14 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: "user"
-    }
+    },
+    events: [
+        {
+            title: String,
+            location: String,
+            date: String
+        }
+    ]
 })
 userSchema.plugin(passportLocalMongoose);
 const User = mongoose.model('User', userSchema);
@@ -89,13 +111,13 @@ passport.deserializeUser(User.deserializeUser())
 
 const BlogpostSchema = new mongoose.Schema({
     title: {
-        type:String,
-        require:true,
+        type: String,
+        require: true,
         minlength: 5
     },
     publish_date: {
-        type:Date, 
-        default: Date.now(), 
+        type: Date,
+        default: Date.now(),
         require: true
     },
     author: String,
@@ -136,8 +158,8 @@ app.get('/about', (req, res) => {
 })
 
 //get user publication list
-app.get('/publications',(req,res)=>{
-    res.sendFile(__dirname+"/public/PublicationList.html")
+app.get('/publications', (req, res) => {
+    res.sendFile(__dirname + "/public/PublicationList.html")
 })
 
 
@@ -265,8 +287,8 @@ app.post('/save-publication', (req, res) => {
             location: req.body.location,
             summary: req.body.summary,
             link: req.body.link,
-            authors:req.body.authors,
-            image:req.body.image,
+            authors: req.body.authors,
+            image: req.body.image,
         }
         console.log(req.body._id);
         if (req.body._id) {
@@ -275,7 +297,7 @@ app.post('/save-publication', (req, res) => {
                 {runValidators: true},
                 (err, info) => {
                     if (err) {
-                        res.redirect('/admin-edit-pub?error_message=' + err.message + "&input=" + JSON.stringify(publication) + "&publication_id=" + req.body._id)
+                        res.redirect('/get-edit-publication?error_message=' + err.message + "&input=" + JSON.stringify(publication) + "&publication_id=" + req.body._id)
                     } else {
                         res.redirect('/admin-pub-list')
 
@@ -287,7 +309,7 @@ app.post('/save-publication', (req, res) => {
             np.save((err, new_publication) => {
                 if (err) {
                     console.log(err)
-                    res.redirect('/admin-edit-pub?error_message=' + err.message + "&input=" + JSON.stringify(publication))
+                    res.redirect('/get-edit-publication?error_message=' + err.message + "&input=" + JSON.stringify(publication))
                 } else {
                     res.redirect('/admin-pub-list')
                 }
@@ -315,39 +337,308 @@ app.post('/delete-publication-by-id', (req, res) => {
                 }
             }
         )
-    }else{
+    } else {
         res.redirect('/');
     }
 });
 
 // determine if person is an admin or client
-app.get('/portal',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/admin_portal.html')
-    }else if(req.isAuthenticated()&&req.user.role==='user'){
+app.get('/portal', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/admin_portal.html')
+    } else if (req.isAuthenticated() && req.user.role === 'user') {
+        res.sendFile(__dirname + '/private/userPortal.html');
+    } else {
         res.redirect('/');
     }
 })
 
 //get the admin publication list
-app.get('/admin-pub-list',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/PublicationListAdmin.html')
-    }else{
+app.get('/admin-pub-list', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/PublicationListAdmin.html')
+    } else {
         res.redirect('/');
     }
 })
 
 //get the edit publication form for admins
-app.get('/get-edit-publication',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/editPublication.html')
-    }else{
+app.get('/get-edit-publication', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/editPublication.html')
+    } else {
         res.redirect('/');
     }
 })
 
+/////////////////////events stuff below/////////////////////////
+//get the public events page
 
+
+app.get('/events', (req, res) => {
+    res.sendFile(__dirname + "/public/EventList.html")
+})
+
+// get the events list for the user
+app.get('/get-events-admin', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/adminListEvents.html')
+    } else {
+        res.redirect('/');
+    }
+})
+
+// get the edit event form for the admin
+app.get('/get-edit-event', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/editEvents.html');
+    } else {
+        res.redirect('/');
+    }
+})
+//allow admins and users to get events
+
+app.get('/get-all-events', (req, res) => {
+    Event.find((err, data) => {
+        if (err) {
+            res.send({
+                "message": "internal database error",
+                "data": []
+            });
+        } else {
+            res.send({
+                "message": "success",
+                "data": data//.slice(0,5)
+            })
+        }
+    })
+})
+
+app.get('/get-event-by-id',
+    function (req, res) {
+        // console.log(req.query.movie_id);
+        console.log(req.query.event_id);
+        Event.find({"_id": req.query.event_id}, function (err, data) {
+            if (err || data.length === 0) {
+                res.send({
+                    "message": "internal database error",
+                    "data": {}
+                });
+            } else {
+
+                res.send({
+                    "message": "success",
+                    "data": data[0]
+                })
+            }
+        });
+    });
+
+
+// create or edit a event for the admin
+app.post('/save-event', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        console.log(req.body.publish_date)
+        const event = {
+            title: req.body.title,
+            image: req.body.image,
+            summary: req.body.summary,
+            location: req.body.location,
+            date: req.body.date
+        }
+        if (req.body._id) {
+            Event.updateOne({_id: req.body._id},
+                {$set: event},
+                {runValidators: true},
+                (err, info) => {
+                    if (err) {
+                        res.redirect('/get-edit-event?error_message=' + err.message + "&input=" + JSON.stringify(publication) + "&publication_id=" + req.body._id)
+                    } else {
+                        res.redirect('/get-events-admin')
+
+                    }
+                }
+            )
+        } else {
+            const ne = new Event(event);
+            ne.save((err, new_event) => {
+                if (err) {
+                    console.log(err)
+                    res.redirect('/get-edit-event?error_message=' + err.message + "&input=" + JSON.stringify(publication))
+                } else {
+                    res.redirect('/get-events-admin')
+                }
+            })
+        }
+    } else {
+        res.redirect('/')
+    }
+})
+// delete a event
+app.post('/delete-event-by-id', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        Event.deleteOne(
+            {"_id": req.body._id},
+            {},
+            (err) => {
+                if (err) {
+                    res.send({
+                        "message": "database deletion error"
+                    })
+                } else {
+                    res.send({
+                        "message": "success"
+                    })
+                }
+            }
+        )
+    } else {
+        res.redirect('/');
+    }
+});
+
+//rsvp things
+app.post('/rsvp_event', (req, res) => {
+    if (req.isAuthenticated()) {
+        console.log('entered auth');
+        const event = req.body.event;
+        const user = req.user;
+        //console.log(event)
+        //console.log(user)
+        User.updateOne({
+                username: user.username,
+                'events.title': {$ne: event.title}
+
+            },
+            {
+                $push: {
+                    events: event
+                }
+            },
+            {},
+            (err, info) => {
+                if (err) {
+                    res.send({
+                        message: "database error"
+                    })
+                } else {
+
+                }
+            }
+        )
+        Event.updateOne(
+            {
+                _id: event._id,
+                'people.username': {$ne: user.username}
+            },
+            {
+                $push: {
+                    people: user
+                }
+            },
+            {},
+            (err, info) => {
+                if (err) {
+                    res.send({
+                        message: "database error"
+                    })
+                } else {
+                    res.send({
+                        message: "success"
+                    })
+                }
+            }
+        )
+    } else {
+        res.redirect('/login');
+    }
+})
+
+app.post('/unrsvp_event', (req, res) => {
+    if (req.isAuthenticated()) {
+        const event = req.body.event;
+        console.log(event)
+        User.updateMany({
+
+            },
+            {
+                $pull: {
+                    events:{_id:event}
+                }
+            },
+            {},
+            (err, info) => {
+                if (err) {
+                    res.send({
+                        message: "database error"
+                    })
+                } else {
+                    res.send({
+                        message:'success'
+                    })
+                }
+            }
+        )
+    }
+})
+
+app.post('/user_unrsvp',(req, res) => {
+    if (req.isAuthenticated()) {
+        const event = req.body.event;
+        const user = req.user
+        console.log(user)
+        User.updateOne({
+                username: user.username,
+            },
+            {
+                $pull: {
+                    events:{_id:event}
+                }
+            },
+            {},
+            (err, info) => {
+                if (err) {
+                    res.send({
+                        message: "database error"
+                    })
+                } else {
+                    // res.send({
+                    //     message:'success'
+                    // })
+                }
+            }
+        )
+        Event.updateOne({
+                _id: event,
+            },
+            {
+                $pull: {
+                    people:{username:user.username}
+                }
+            },
+            {},
+            (err, info) => {
+                if (err) {
+                    res.send({
+                        message: "database error"
+                    })
+                } else {
+                    res.send({
+                        message:'success'
+                    })
+                }
+            }
+        )
+    }
+})
+
+app.get('/guest-list',(req, res) => {
+    if(req.isAuthenticated()&&req.user.role === 'admin'){
+        res.sendFile(__dirname + '/private/guestList.html')
+    }else{
+        res.redirect('/');
+    }
+})
 ///////////////////// blog stuff below /////////////////////////
 // the blog page route, admins will have access to the "add blog" page
 app.get('/view-blog', (req, res) => {
@@ -380,10 +671,10 @@ app.get('/get-all-blogposts', (req, res) => {
 })
 
 
-app.get('/get-edit-Blogpost',(req, res)=>{
-    if(req.isAuthenticated() && req.user.role === 'admin'){
-        res.sendFile(__dirname+'/private/editBlogpost.html')
-    }else{
+app.get('/get-edit-Blogpost', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/editBlogpost.html')
+    } else {
         res.redirect('/')
     }
 })
@@ -425,30 +716,29 @@ app.post('/save-blogpost', (req, res) => {
                 }
             })
         }
-    // otherwise redirect; not allowed to save blogposts   
-    }
-    else if (req.isAuthenticated() && req.user.role === 'user') {
+        // otherwise redirect; not allowed to save blogposts
+    } else if (req.isAuthenticated() && req.user.role === 'user') {
         res.redirect('/');
-} else {
-    res.redirect('/'); // for non-logged in users
-}
+    } else {
+        res.redirect('/'); // for non-logged in users
+    }
 });
 
 
 //get the admin publication list
-app.get('/admin-blog-list',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/BlogListAdmin.html')
-    }else{
+app.get('/admin-blog-list', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/BlogListAdmin.html')
+    } else {
         res.redirect('/');
     }
 })
 
 //get the edit publication form for admins
-app.get('/admin-edit-blog',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/editBlogpost.html')
-    }else{
+app.get('/admin-edit-blog', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/editBlogpost.html')
+    } else {
         res.redirect('/');
     }
 })
@@ -470,16 +760,16 @@ app.post('/delete-blog-by-id', (req, res) => {
                 }
             }
         )
-    }else{
+    } else {
         res.redirect('/');
     }
 });
 
 //get the edit publication form for admins
-app.get('/admin-edit-blog',(req,res)=>{
-    if(req.isAuthenticated()&&req.user.role==='admin'){
-        res.sendFile(__dirname+'/private/editBlogpost.html')
-    }else{
+app.get('/admin-edit-blog', (req, res) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.sendFile(__dirname + '/private/editBlogpost.html')
+    } else {
         res.redirect('/');
     }
 })

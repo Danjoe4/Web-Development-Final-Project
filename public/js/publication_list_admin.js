@@ -8,7 +8,7 @@ function get_publication_object(publication, idx) {
                         <p class="rating larger_text cel_noto">Date Published: ${publication.publish_date}</p>
                     </div>
                     <div class="col-lg-3 d-flex justify-content-end buttonDiv">
-                        <input type="checkbox" class="check_box" value="${publication._id}">
+                       
                         <button class="btn btn-lg btn-info" value="${publication._id}"  onclick="onEdit(this)">Edit</button>
                         <button class="btn btn-lg btn-danger" value="${publication._id}"  onclick="onDelete(this)">Delete</button>
                     </div>

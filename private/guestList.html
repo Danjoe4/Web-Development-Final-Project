@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <meta name="keywords" content="Extractives @Clark">
@@ -11,6 +9,7 @@
     <title>Home</title>
     <link rel="stylesheet" href="css/nicepage.css" media="screen">
     <link rel="stylesheet" href="css/Home.css" media="screen">
+    <link rel="stylesheet" href="css/events.css" media="screen">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script class="u-script" type="text/javascript" src="js/nicepage.js" defer=""></script>
@@ -33,27 +32,26 @@
         "name": "",
         "logo": "images/Clark_logo.png"
     }</script>
-    <script src="js/admin_portal.js" defer></script>
+    <script src="js/guestList.js" defer></script>
 
     <meta name="theme-color" content="#478ac9">
     <meta property="og:title" content="Home">
     <meta property="og:type" content="website">
-
 </head>
 <body>
-
 <section id="nav-placeholder">
     <script>
         $("#nav-placeholder").load("navbar.html");
     </script>
 </section>
 
-<h1>Welcome Admin</h1>
-<a href="/admin-pub-list">Edit Publications</a>
-<br>
-<a href="/admin-blog-list">Edit Blogposts</a>
-<br>
-<a href="/get-events-admin">Edit Events</a>
+<section id="guest_list_section">
+
+    <ul id="guest_list" class="list-group list-group-flush">
+
+    </ul>
+
+</section>
 
 
 </body>

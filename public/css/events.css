@@ -1,0 +1,46 @@
+#event_list{
+    padding:1rem
+}
+
+#event_list .card {
+    border: 2px solid var(--red);
+}
+
+#event_list, .donate .team {
+    margin-top: 2em;
+    position: relative;
+}
+
+#event_list h2, h3 {
+    font-family: 'Vollkorn', serif;
+    color: var(--black);
+    margin: auto;
+    text-align: center;
+}
+
+#event_list p,a{
+    text-align: center
+}
+#event_list .card-img-top {
+    border-radius: 10%;
+    padding: 2rem;
+    display: block;
+    height: auto;
+    width: 70%;
+    margin: auto;
+}
+#event_list .list-group-item {
+
+    border-color: var(--white);
+}
+
+.rsvp button{
+    background-color: var(--red)
+}
+
+.rsvp{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom:3rem;
+}

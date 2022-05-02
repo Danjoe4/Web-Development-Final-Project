@@ -1,8 +1,10 @@
-Tasks:
-Fix redirect on login
-Formatting for both the blog page and publications page (Dan can handle this he knows how scientific publications should be presented)
-Fix footer icons
-
+Demo is video for May 2nd 
+Due May 7th
 
 url:
 https://web-dev-with-kyan.ue.r.appspot.com/
+
+Deployment:
+git pull
+npm install && npm start
+gcloud app deploy

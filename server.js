@@ -29,9 +29,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Configure Mongoose, and listen on the port, this is better for deployment
-mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect('mongodb://localhost:27017/extractiveDB', {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
-    app.listen(port, ()=>{
+    app.listen(3000, ()=>{
         console.log("Database connection is Ready "
         + "and Server is Listening on Port ", port);
     })
@@ -148,7 +148,7 @@ const Blogpost = mongoose.model('Blogpost', BlogpostSchema)
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 })
-//get our team page
+//get our  page
 app.get('/our-team', (req, res) => {
     res.sendFile(__dirname + "/public/team.html");
 })

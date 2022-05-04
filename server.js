@@ -29,7 +29,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Configure Mongoose, and listen on the port, this is better for deployment
-mongoose.connect('mongodb://localhost:27017/extractiveDB', {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
     app.listen(port, ()=>{
         console.log("Database connection is Ready "

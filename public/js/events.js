@@ -27,6 +27,15 @@ function get_event_object(event, idx) {
         </li>`
 }
 
+$(document).ready(() => {
+    $.getJSON('/get_current_user').done(data => {
+        if (data.message === 'success') {
+            const user = data.data;
+            checkEventsUser()
+
+        } 
+    })
+})
 
 function checkEventsUser() {
     console.log('event user running');

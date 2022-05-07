@@ -5,18 +5,32 @@ function renderPost(post, idx) {
             <div class="card mb-3 d-flex align-items-stretch">
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                        <h2 class="">${post.title}</h2>
                         <img class="card-img-top" src="${post.image}" alt="Card image cap">
                     </div>
                     <div class="col-md-8">
+                    <h2 class="">${post.title}</h2>
                         <div class="row justify-content-center">
-                        <h4>Written by: <b style="font-style: italic; font-weight: normal;"> ${post.author}</b></h4>
-                        <h4>Updated: <b style="font-weight: normal;"> ${date}</b></h4>
                             <p>${post.text}</p>
                         </div>
-                        <div class="row justify-content-end">
-                        <button id="show_comments" type="button" class="btn btn-info w-25 mx-3" onclick="showComments(this);">Show Comments</button>
-                    </div>
+                        <div class="row justify-content-end align-items-end">
+                        <div class="col-8">
+                            <div class="row justify-content-start">
+                                <div class="col-6">
+                            <p>by ${post.author}</p>
+                                </div>
+                                <div class="col-6">
+                            <p>on ${date}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-end">
+                        <div class="row">
+                        <div class="btn-group">
+                            <button id="show_comments" type="button" class="btn btn-info" onclick="showComments(this);">Show Comments</button>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
                     </div>
                     </div>
 
@@ -84,17 +98,3 @@ function getPosts() {
         });
 }
 getPosts();
-
-$(document).ready(()=>{
-    $.getJSON('/get_current_user').done(data=>{
-        if(data.message==='success'){
-            console.log(data)
-            const user=data.data;
-            $('.login').remove();
-            $('#showname').text(user.fullname)
-            $('#showname2').text(user.fullname)
-        }else{
-            $('.logout').remove();
-        }
-    })
-})

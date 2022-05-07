@@ -111,6 +111,8 @@
                 if (data.data.username) {
                     $(".login").hide();
                     $(".logout").show();
+                    $('#showname').text(data.data.fullname)
+                    $('#showname2').text(data.data.fullname)
                 } else {
                     $(".login").show();
                     $(".logout").hide();

@@ -10,8 +10,10 @@ function renderPost(post, idx){
                         ${post.text} 
                     </div>
                     <div class="col-lg-3 d-flex justify-content-end">
+                    <div class-"btn-group">
                     <button class="btn btn-lg btn-info" value="${post._id}"  onclick="onEdit(this)">Edit</button>
                     <button class="btn btn-lg btn-danger" value="${post._id}"  onclick="onDelete(this)">Delete</button>
+                    </div>
                     </div>
                 </div>
           </li>`

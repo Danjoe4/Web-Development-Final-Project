@@ -5,11 +5,12 @@ function get_event_object(event, idx) {
                         <h2 class="movie_title">${event.title}</h2>
                         <p class="rating larger_text cel_noto">Event Date: ${event.date}</p>
                     </div>
-                    <div class="col-lg-3 d-flex justify-content-end buttonDiv">
-                       
+                    <div class="col-lg-6 d-flex justify-content-end buttonDiv">
+                    <div class-"btn-group">
                         <button class="btn btn-lg btn-info" value="${event._id}"  onclick="onEdit(this)">Edit</button>
                         <button class="btn btn-lg btn-danger" value="${event._id}"  onclick="onDelete(this)">Delete</button>
                         <button class="btn btn-lg btn-info" value="${event._id}" onclick="guestList(this)">Show Guest List</button>
+                    </div>
                     </div>
                 </div>
           </li>`

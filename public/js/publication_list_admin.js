@@ -7,11 +7,12 @@ function get_publication_object(publication, idx) {
                         <h2 class="movie_title">${publication.title}</h2>
                         <p class="rating larger_text cel_noto">Date Published: ${publication.publish_date}</p>
                     </div>
-                    <div class="col-lg-3 d-flex justify-content-end buttonDiv">
-                       
+                    <div class="col-lg-6 d-flex justify-content-end buttonDiv">
+                       <div class-"btn-group">
                         <button class="btn btn-lg btn-info" value="${publication._id}"  onclick="onEdit(this)">Edit</button>
                         <button class="btn btn-lg btn-danger" value="${publication._id}"  onclick="onDelete(this)">Delete</button>
                     </div>
+                        </div>
                 </div>
           </li>`
 }

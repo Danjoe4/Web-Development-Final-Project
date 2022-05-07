@@ -28,7 +28,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Configure Mongoose, and listen on the port, this is better for deployment
+// Configure Mongoose, and listen on the port, this is better for deployment because the app will 
+// fail to start if the database is not available
 mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
     app.listen(port, ()=>{

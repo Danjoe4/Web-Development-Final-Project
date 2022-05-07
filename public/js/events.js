@@ -3,24 +3,31 @@ function get_event_object(event, idx) {
             <div class="card mb-3 d-flex align-items-stretch">
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                        <h2 class="">${event.title}</h2>
                         <img class="card-img-top" src="${event.image}" alt="Card image cap">
                     </div>
                     <div class="col-md-8">
-                        <div class="row justify-content-center">
-                            <h2 class="">Event Date:</h2>
-                            <p>${event.date}</p>
-                            <h2>Event Location</h2>
-                            <p>${event.location}</p>
-                            <h2>Summary</h2>
-                            <p>${event.summary}</p>
-                            <h2>I am interested</h2>
+                        
+                        <h2 class="text-start mx-2">${event.title}</h2>
+                        
+                        <p class="text-start mx-2">${event.summary}</p>
+                        <p class="text-start mx-2">
+                        <b>Event Date:</b> ${event.date}
+                        </p>
+                        <p class="text-start mx-2">
+                        <b>Event location:</b> ${event.location}
+                        </p>
+                        <div class="row">
+                        <div class="col-md-6 mx-2">
+                            <h4>Would you like to attend?</h4>
+                        </div>
+                        <div class="col-md-5 m-2">
                             <div class="rsvp">
                                 <button class="btn justify-content-center rsvp"  value='${event._id}' onclick='rsvpEvents(this)'>RSVP</button>
                                 <br>
                             </div>
-                            
+                            </div>
                         </div>
+
                     </div>
                     </div>
                 </div>
@@ -30,9 +37,7 @@ function get_event_object(event, idx) {
 $(document).ready(() => {
     $.getJSON('/get_current_user').done(data => {
         if (data.message === 'success') {
-            const user = data.data;
             checkEventsUser()
-
         } 
     })
 })
